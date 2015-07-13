@@ -64,67 +64,46 @@ var code = {
     },
 
     squareRoot: function (n) {
-        // limit to the thousandth place
-        var placeGranularity = 3;
-
-
-        // use Infinity if you want to go to the very end of the number
-        // - WARNING - (near?) infinite loop possible depending on number
-        //
-        // var placeGranularity = Infinity;
-
+        // limit to the millionth place (3 for thousandth place, etc..)
+        var granularity = 6;
+        // var granularity = Infinity; // - WARNING - (near?) infinite loop possible depending on number
 
         var target = n / 2; // what number i'm using for comparison
         var targetGranularity = 0; // what place I'm in.
+        var targetSquare = Math.pow(target, 2); // number to compare against
         var precision = Math.pow(10, -targetGranularity);
-        var targetSquare = Math.pow(target, 2); //((Math.pow(target, 2) * precision) / precision); // number to compare against
-        var roundedN = ((n * precision) / precision);
+        var roundedN = ((n * precision) / precision); // can effectively find square root of floating "n".
 
         function square(target, precision){
-            console.log('L7 target: %o | precision: %o | square: %o', target, precision, (Math.round(Math.pow(target, 2) * precision) / precision));
-            return (Math.round(Math.pow(target, 2) * precision)) / precision;
+            return((Math.pow(target, 2) * precision) / precision);
         };
         function recalculateTarget(number, precision, negative){
-            return (((target * precision) + (negative === true ? 0-precision : precision)) / precision);;
+            return (Math.round((target * precision) + (negative === true ? -1 : 1)) / precision);
         }
-
 
         var i = 0;
         var tries = [];
-        while (targetSquare != n && targetGranularity < placeGranularity && i < 1000) {
+        while (targetSquare != n && targetGranularity <= granularity && i < 1000) {
             i++;
-            console.log('WHILE: (%o != %o && %o< %o && %o < 1000) /////  roundedN: %o | target: %o', targetSquare, n, targetGranularity, placeGranularity, i, 1000, roundedN, target);
-            console.log(tries);
-            if (targetSquare == roundedN || tries.indexOf(target) != -1) {
-                console.log('CHANGE PLACES!! targetGranularity: %o, targetSquare: %o, precision: %o, roundedN: %o', targetGranularity, targetSquare, precision, roundedN);
-                targetGranularity++;
-                precision = Math.pow(10, targetGranularity);
-                roundedN = ((n * precision) / precision);
-                console.log('111 target: %o, targetSquare: %o, targetGranularity: %o, precision: %o, roundedN: %o', target, targetSquare, targetGranularity, precision, roundedN);
-                target = recalculateTarget(target, precision, true);
-                //tries = [];
-                targetSquare = square(target, precision);
 
-
-            }
             if (targetSquare > roundedN) {
-                console.log('FOO1 %o^2 == %o | precision: %o, roundedN: %o', target, targetSquare, precision, roundedN);
                 target = recalculateTarget(target, precision, true);
 
             } else if (targetSquare < roundedN) {
-                console.log('FOO2 %o^2 == %o | precision: %o, roundedN: %o', target, targetSquare, precision, roundedN);
                 target = recalculateTarget(target, precision);
             }
+            if (targetSquare == roundedN || tries.indexOf(target) != -1) {
+                targetGranularity++;
+                precision = Math.pow(10, targetGranularity);
+                roundedN = (Math.round(n * precision) / precision);
+            }
             targetSquare = square(target, precision);
-            console.log('BAR %o^2 == %o', target, targetSquare);
 
             tries.push(target);
 
-            console.log('NEW target: %o | targetSquare: %o, roundedN: %o', target, targetSquare, roundedN);
         }
-        console.log('LAST: %o | (%o != %o && %o< %o && %o < 1000)', target, targetSquare, n, targetGranularity, placeGranularity, i);
-
         return target;
+
     }
 };
 module.exports = code;
