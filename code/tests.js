@@ -30,6 +30,7 @@ var tests = {
         assert.areEqual(6765, code.fibonacci(20));
     },
     squareRootTest: function() {
+        // These lines were miscased. You're not trying to kobayashi maru me are you?
         assert.areEqual(5.0, code.squareRoot(25.0));
         assert.isInRange(1.414, 1.4144, code.squareRoot(2.0));
     }

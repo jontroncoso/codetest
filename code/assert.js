@@ -12,7 +12,9 @@ var assert = {
             throw new Error(failText || "Expected false.")
     },
     isInRange: function(least, most, actual, failText) {
-        if (actual < least || actual > most) {
+        if (typeof actual != 'number' || actual < least || actual > most) { 
+            // I fixed the if statement ( added `typeof actual != 'number' || `)
+            // I discovered this when I noticed I forgot to return the ratio and got a PASS anyway!
             throw new Error(failText || "Expected " + least + " to " + most + ", but got " + actual + ".");
         }
     }
